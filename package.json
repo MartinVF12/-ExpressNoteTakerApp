@@ -1,14 +1,17 @@
 {
-  "name": "note-taker",
-  "version": "1.0.0",
-  "description": "Una aplicación de toma de notas desarrollada con Express.js",
-  "main": "server.js",
-  "scripts": {
-    "start": "node server.js"
-  },
-  "author": "MARTIN VIVANCo",
-  "license": "ISC",
   "dependencies": {
-    "express": "^4.16.4"
-  }
+    "express": "^4.18.3",
+    "uuid": "^9.0.1"
+  },
+  "name": "challenge11",
+  "description": "",
+  "version": "1.0.0",
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }

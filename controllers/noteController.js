@@ -2,43 +2,59 @@ const fs = require('fs');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 
-const dbPath = path.join(__dirname, '../db/db.json');
+const DB_PATH = path.join(__dirname, '..', 'db', 'db.json');
 
 const getNotes = (req, res) => {
-    fs.readFile(dbPath, 'utf8', (err, data) => {
-        if (err) throw err;
+    fs.readFile(DB_PATH, 'utf8', (err, data) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ message: 'Error reading the notes' });
+        }
         res.json(JSON.parse(data));
     });
 };
 
-const saveNote = (req, res) => {
+const createNote = (req, res) => {
     const newNote = { ...req.body, id: uuidv4() };
 
-    fs.readFile(dbPath, 'utf8', (err, data) => {
-        if (err) throw err;
+    fs.readFile(DB_PATH, 'utf8', (err, data) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ message: 'Error reading the notes' });
+        }
         const notes = JSON.parse(data);
         notes.push(newNote);
 
-        fs.writeFile(dbPath, JSON.stringify(notes), (err) => {
-            if (err) throw err;
+        fs.writeFile(DB_PATH, JSON.stringify(notes), (err) => {
+            if (err) {
+                console.error(err);
+                return res.status(500).json({ message: 'Error writing the new note' });
+            }
             res.json(newNote);
         });
     });
 };
 
 const deleteNote = (req, res) => {
-    const noteId = req.params.id;
+    fs.readFile(DB_PATH, 'utf8', (err, data) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ message: 'Error reading the notes' });
+        }
+        const notes = JSON.parse(data).filter(note => note.id !== req.params.id);
 
-    fs.readFile(dbPath, 'utf8', (err, data) => {
-        if (err) throw err;
-        let notes = JSON.parse(data);
-        notes = notes.filter(note => note.id !== noteId);
-
-        fs.writeFile(dbPath, JSON.stringify(notes), (err) => {
-            if (err) throw err;
+        fs.writeFile(DB_PATH, JSON.stringify(notes), (err) => {
+            if (err) {
+                console.error(err);
+                return res.status(500).json({ message: 'Error deleting the note' });
+            }
             res.json({ message: 'Note deleted successfully' });
         });
     });
 };
 
-module.exports = { getNotes, saveNote, deleteNote };
+module.exports = {
+    getNotes,
+    createNote,
+    deleteNote
+};
